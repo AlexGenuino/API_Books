@@ -71,4 +71,41 @@ class BookController extends Controller
         }
     }
 
+    public function searchbook(Request $request){
+        $description = '';
+        $data = $request->all();
+
+        try{
+            if(isset($data['description'])){
+                $description = $data['description'];
+                $page = file_get_contents("https://www.googleapis.com/books/v1/volumes?q={$description}");
+                $page = json_decode($page);
+                $page = $page->items;
+
+                $func = function($n){
+                    //echo(var_dump(get_object_vars($n->volumeInfo->description)));
+                    //dump($n);
+                    return [
+                        'volumeInfo' => $n->volumeInfo,
+                    ];
+                };
+                $return = array_map($func, $page);
+                return response()->json([
+                    'data' => $return
+                ], 200);
+
+            }else{
+                return response()->json([
+                    'msg' => 'descricao nao informada'
+                ], 200);
+            }
+
+        }catch(\Exception $e){
+            $message = new ApiMessages($e->getMessage());
+
+            return response()->json($message->getMessage(), 401);
+        }
+
+    }
+
 }

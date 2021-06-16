@@ -70,6 +70,7 @@ Route::prefix('v1')->namespace('Api')->group(function(){
                         //TOKEN NO HEADER DO USUARIO LOGADO
             Route::resource('book', 'BookController');
 
+            Route::post('book/booksearch', 'BookController@searchbook');
         });
     });
 

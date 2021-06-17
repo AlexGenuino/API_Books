@@ -54,6 +54,12 @@ class BookController extends Controller
 
         try{
 
+            if(!isset($data['id_google'])){
+                return response()->json([
+                    'msg' => 'parametro obrigatorio id_google não informado'
+                ], 200);
+            }
+
             $book = $this->book->create($data);
 
             $data['id_user'] = auth('api')->user()->id;
